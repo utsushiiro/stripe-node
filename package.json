@@ -4,5 +4,19 @@
   "main": "index.js",
   "repository": "https://github.com/utsushiiro/stripe-node.git",
   "author": "utsushiiro <ozeki.haru@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "fmt": "prettier --write \"./*.js\""
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "express": "^4.17.0",
+    "prettier": "^1.17.1",
+    "stripe": "^7.0.0"
+  },
+  "engines": {
+    "node": ">=8.11.1 <11",
+    "npm": ">=5.6.0 <7",
+    "yarn": ">=1.5.1 <2"
+  }
 }
