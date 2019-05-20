@@ -1,0 +1,8 @@
+{
+  "name": "stripe-node",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/utsushiiro/stripe-node.git",
+  "author": "utsushiiro <ozeki.haru@gmail.com>",
+  "license": "MIT"
+}
