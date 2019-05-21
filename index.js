@@ -1,62 +1,36 @@
-const stripe = require("stripe")(process.env.token);
+const stripe = require("stripe")(process.env.STRIPE_TOKEN);
 
 
-/**
- * @param customer_email
- */
-stripe_create_customer = customer_email => {
-    stripe.customers.create(
-        {
-            email: customer_email
-        },
-        function(err, customer) {
-            // asynchronously called
-            console.log(customer);
-        }
-    );
+const create_product = async () => {
+  return await stripe.products.create({
+    name: 'SaaS Platform',
+    type: 'service',
+  })
 };
 
-/**
- *
- * @param id 顧客のID
- * @param num カード番号
- * @param month カードの有効期限
- * @param year カードの有効期限
- * @param cvc カードのセキュリティ番号
- */
-stripe_create_card = (id, num, month, year, cvc) => {
-    console.log(id, num, month, year, cvc);
-    stripe.tokens.create(
-        {
-            card: {
-                number: num,
-                exp_month: month,
-                exp_year: year,
-                cvc: cvc
-            }
-        },
-        (err, token) => {
-            const params = {
-                source: token.id
-            };
-            stripe.customers.createSource(id, params, (err, card) => {
-                console.log(card);
-            });
-        }
-    );
+const create_monthly_plan = async (productId, planName, yen) => {
+  return await stripe.plans.create({
+    product: productId,
+    nickname: planName,
+    currency: 'jpy',
+    interval: 'month',
+    amount: yen,
+  })
 };
 
-/**
- * @param price 請求価格
- * @param description 説明
- * @param customer_id 顧客のID
- */
-stripe_charge = (price, description, customer_id) => {
-    const charge = stripe.charges.create({
-        amount: price,
-        currency: "jpy",
-        description: description,
-        customer: customer_id
-    });
-    console.log(charge);
+const create_customer = async () => {
+  return await stripe.customers.create({
+    email: 'utsushiiro@example.com',
+    source: 'src_18eYalAHEMiOZZp1l9ZTjSU0', // from sample code
+  });
 };
+
+
+const set_subscription = async (customerId, planId, start_timestamp) => {
+  return  await stripe.subscriptions.create({
+    customer: customerId,
+    items: [{plan: planId}],
+
+  });
+};
+
