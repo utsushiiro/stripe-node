@@ -1,5 +1,12 @@
 # stripe-node
 
+## Webhook Testing
+use [ngrok](https://ngrok.com) to expose local server
+
+```
+ngrok http 3000 --region=ap
+```
+
 ## Reference
 - [API doc](https://stripe.com/docs/api)
 - [Demo](https://stripe.com/docs#try-now)
