@@ -70,6 +70,10 @@ const create_webhook_endpoints_for_subscription = async webhook_url => {
   });
 };
 
+const get_stripe_stored_data = () => {
+  return require('./setup-stripe-data');
+};
+
 module.exports = {
   create_service_product,
   create_monthly_plan,
@@ -77,5 +81,6 @@ module.exports = {
   create_customer_without_card,
   create_subscription,
   create_webhook_endpoint_for_all_events,
-  create_webhook_endpoints_for_subscription
+  create_webhook_endpoints_for_subscription,
+  get_stripe_stored_data
 };

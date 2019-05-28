@@ -1,4 +1,5 @@
 const stripe_utils = require("./stripe-utils");
+const stripe_data = stripe_utils.get_stripe_stored_data();
 
 /*
  * TODO
@@ -15,22 +16,13 @@ const stripe_utils = require("./stripe-utils");
 
 const success_scenario_for_paid_plan = async () => {
   try {
-    const product = await stripe_utils.create_service_product(
-      "Good SaaS Service"
-    );
-    const plan = await stripe_utils.create_monthly_plan(
-      product.id,
-      "Good SaaS Monthly Plan",
-      100
-    );
-    const customer = await stripe_utils.create_customer_with_dummy_card(
-      "utsushiiro-with-card@example.com"
-    );
     const subscription = await stripe_utils.create_subscription(
-      customer.id,
-      plan.id
+      stripe_data["customer_id_with_valid_dummy_card"],
+      stripe_data["1000yen_monthly_plan_id"]
     );
-    console.dir({ product, plan, customer, subscription }, { depth: 3 });
+    console.group("success_scenario_for_paid_plan");
+    console.dir({ subscription }, { depth: 3 });
+    console.groupEnd();
   } catch (err) {
     console.log(err);
   }
@@ -38,69 +30,40 @@ const success_scenario_for_paid_plan = async () => {
 
 const fail_scenario_for_paid_plan_because_of_no_card = async () => {
   try {
-    const product = await stripe_utils.create_service_product(
-      "Good SaaS Service"
-    );
-    const plan = await stripe_utils.create_monthly_plan(
-      product.id,
-      "Good SaaS Monthly Plan",
-      100
-    );
-    const customer = await stripe_utils.create_customer_without_card(
-      "utsushiiro-without-card@example.com"
-    );
     const subscription = await stripe_utils.create_subscription(
-      customer.id,
-      plan.id
+      stripe_data["customer_id_without_card"],
+      stripe_data["1000yen_monthly_plan_id"]
     );
-    console.dir({ product, plan, customer, subscription }, { depth: 3 });
   } catch (err) {
+    console.group("fail_scenario_for_paid_plan_because_of_no_card");
     console.log(err);
+    console.groupEnd();
   }
 };
 
 const fail_scenario_for_paid_plan_because_of_card_declined = async () => {
   try {
-    const product = await stripe_utils.create_service_product(
-      "Good SaaS Service"
-    );
-    const plan = await stripe_utils.create_monthly_plan(
-      product.id,
-      "Good SaaS Monthly Plan",
-      100
-    );
-    const customer = await stripe_utils.create_customer_with_dummy_card(
-      "utsushiiro-with-declined-card@example.com",
-      true
-    );
     const subscription = await stripe_utils.create_subscription(
-      customer.id,
-      plan.id
+      stripe_data["customer_id_with_invalid_dummy_card"],
+      stripe_data["1000yen_monthly_plan_id"]
     );
-    console.dir({ product, plan, customer, subscription }, { depth: 3 });
+    console.group("fail_scenario_for_paid_plan_because_of_card_declined");
+    console.dir({ subscription }, { depth: 3 });
+    console.groupEnd();
   } catch (err) {
     console.log(err);
   }
 };
 
-const success_scenario_for_free_plan = async () => {
+const success_scenario_for_free_plan_and_customer_without_card = async () => {
   try {
-    const product = await stripe_utils.create_service_product(
-      "Good SaaS Service"
-    );
-    const plan = await stripe_utils.create_monthly_plan(
-      product.id,
-      "Good SaaS Monthly Plan",
-      0
-    );
-    const customer = await stripe_utils.create_customer_without_card(
-      "utsushiiro-without-card@example.com"
-    );
     const subscription = await stripe_utils.create_subscription(
-      customer.id,
-      plan.id
+      stripe_data["customer_id_without_card"],
+      stripe_data["free_monthly_plan_id"]
     );
-    console.dir({ product, plan, customer, subscription }, { depth: 3 });
+    console.group("success_scenario_for_free_plan_and_customer_without_card");
+    console.dir({ subscription }, { depth: 3 });
+    console.groupEnd();
   } catch (err) {
     console.log(err);
   }
@@ -110,5 +73,5 @@ module.exports = {
   success_scenario_for_paid_plan,
   fail_scenario_for_paid_plan_because_of_no_card,
   fail_scenario_for_paid_plan_because_of_card_declined,
-  success_scenario_for_free_plan
+  success_scenario_for_free_plan_and_customer_without_card
 };
