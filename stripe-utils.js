@@ -13,10 +13,10 @@ const create_service_product = async (
   });
 };
 
-const create_monthly_plan = async (productId, planName, yen) => {
+const create_monthly_plan = async (product_id, plan_name, yen) => {
   return await stripe.plans.create({
-    product: productId,
-    nickname: planName,
+    product: product_id,
+    nickname: plan_name,
     currency: "jpy",
     interval: "month",
     amount: yen
@@ -48,10 +48,28 @@ const create_customer_without_card = async email => {
   });
 };
 
-const create_subscription = async (customerId, planId) => {
+const create_subscription = async (customer_id, plan_id) => {
   return await stripe.subscriptions.create({
-    customer: customerId,
-    items: [{ plan: planId }],
+    customer: customer_id,
+    items: [{ plan: plan_id }],
+    expand: ["latest_invoice.payment_intent"]
+  });
+};
+
+const change_plan_of_subscription = async (subscription_id, new_plan_id) => {
+  const subscription = await stripe.subscriptions.retrieve(subscription_id);
+  return await stripe.subscriptions.update(subscription.id, {
+    cancel_at_period_end: false,
+    items: [
+      {
+        /*
+         * This id specification is necessary to replace previous plan
+         * If it is removed, this subscription will have two plans by this update.
+         */
+        id: subscription.items.data[0].id,
+        plan: new_plan_id
+      }
+    ],
     expand: ["latest_invoice.payment_intent"]
   });
 };
@@ -71,7 +89,7 @@ const create_webhook_endpoints_for_subscription = async webhook_url => {
 };
 
 const get_stripe_stored_data = () => {
-  return require('./stripe-data.json');
+  return require("./stripe-data.json");
 };
 
 module.exports = {
@@ -80,6 +98,7 @@ module.exports = {
   create_customer_with_dummy_card,
   create_customer_without_card,
   create_subscription,
+  change_plan_of_subscription,
   create_webhook_endpoint_for_all_events,
   create_webhook_endpoints_for_subscription,
   get_stripe_stored_data

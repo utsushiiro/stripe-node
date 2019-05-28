@@ -24,11 +24,11 @@ const stripe_utils = require("./stripe-utils");
     )).id;
 
     stripe_data_json[
-      "2000yen_monthly_plan_id"
-    ] = (await stripe_utils.create_monthly_plan(
-      product.id,
-      "Sample Service 2000yen per month Plan",
-      2000
+        "3000yen_monthly_plan_id"
+        ] = (await stripe_utils.create_monthly_plan(
+        product.id,
+        "Sample Service 3000yen per month Plan",
+        3000
     )).id;
 
     stripe_data_json[
