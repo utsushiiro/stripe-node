@@ -71,7 +71,7 @@ const create_webhook_endpoints_for_subscription = async webhook_url => {
 };
 
 const get_stripe_stored_data = () => {
-  return require('./setup-stripe-data');
+  return require('./stripe-data.json');
 };
 
 module.exports = {
