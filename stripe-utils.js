@@ -74,6 +74,14 @@ const change_plan_of_subscription = async (subscription_id, new_plan_id) => {
   });
 };
 
+const cancel_subscription_immediately = async (subscription_id) => {
+  return await stripe.subscriptions.del(subscription_id);
+};
+
+const cancel_subscription_at_the_end_of_period = async (subscription_id) => {
+  return await stripe.subscriptions.update(subscription_id, {cancel_at_period_end: true});
+};
+
 const create_webhook_endpoint_for_all_events = async webhook_url => {
   return stripe.webhookEndpoints.create({
     url: webhook_url,
@@ -99,6 +107,8 @@ module.exports = {
   create_customer_without_card,
   create_subscription,
   change_plan_of_subscription,
+  cancel_subscription_immediately,
+  cancel_subscription_at_the_end_of_period,
   create_webhook_endpoint_for_all_events,
   create_webhook_endpoints_for_subscription,
   get_stripe_stored_data

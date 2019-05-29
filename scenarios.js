@@ -1,15 +1,6 @@
 const stripe_utils = require("./stripe-utils");
 const stripe_data = stripe_utils.get_stripe_stored_data();
 
-/*
- * TODO
- *  - Plan cancel scenario
- *  ...etc
- *
- * TODO
- *  - use already created product, plan, customer...
- */
-
 const success_scenario_for_paid_plan = async () => {
   try {
     const subscription = await stripe_utils.create_subscription(
@@ -145,6 +136,40 @@ const downgrade_subscription_to_free_plan = async () => {
   }
 };
 
+const cancel_subscription_immediately = async () => {
+  try {
+    const subscription = await stripe_utils.create_subscription(
+        stripe_data["customer_id_with_valid_dummy_card"],
+        stripe_data["1000yen_monthly_plan_id"]
+    );
+
+    const updated_subscription = await stripe_utils.cancel_subscription_immediately(subscription.id);
+
+    console.group("cancel_subscription_immediately");
+    console.dir({ updated_subscription }, { depth: 3 });
+    console.groupEnd();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const cancel_subscription_at_the_end_of_period = async () => {
+  try {
+    const subscription = await stripe_utils.create_subscription(
+        stripe_data["customer_id_with_valid_dummy_card"],
+        stripe_data["1000yen_monthly_plan_id"]
+    );
+
+    const updated_subscription = await stripe_utils.cancel_subscription_at_the_end_of_period(subscription.id);
+
+    console.group("cancel_subscription_at_the_end_of_period");
+    console.dir({ updated_subscription }, { depth: 3 });
+    console.groupEnd();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 module.exports = {
   success_scenario_for_paid_plan,
   fail_scenario_for_paid_plan_because_of_no_card,
@@ -153,5 +178,7 @@ module.exports = {
   upgrade_subscription_from_paid_plan,
   upgrade_subscription_from_free_plan,
   downgrade_subscription_to_paid_plan,
-  downgrade_subscription_to_free_plan
+  downgrade_subscription_to_free_plan,
+  cancel_subscription_immediately,
+  cancel_subscription_at_the_end_of_period,
 };
