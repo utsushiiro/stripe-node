@@ -96,6 +96,11 @@ const create_webhook_endpoints_for_subscription = async webhook_url => {
   });
 };
 
+const check_if_customer_has_card = async customer_id => {
+  const customer = await stripe.customers.retrieve(customer_id);
+  return customer["default_source"] !== null;
+};
+
 const get_stripe_stored_data = () => {
   return require("./stripe-data.json");
 };
@@ -111,5 +116,6 @@ module.exports = {
   cancel_subscription_at_the_end_of_period,
   create_webhook_endpoint_for_all_events,
   create_webhook_endpoints_for_subscription,
+  check_if_customer_has_card,
   get_stripe_stored_data
 };
