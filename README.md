@@ -1,6 +1,15 @@
 # stripe-node
 
+## Setup
+
+set up test data
+
+```
+node setup-stripe-data.js
+```
+
 ## Webhook Testing
+
 use [ngrok](https://ngrok.com) to expose local server
 
 ```
