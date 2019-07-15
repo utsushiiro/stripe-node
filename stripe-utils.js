@@ -6,7 +6,7 @@ const create_service_product = async (
   service_name,
   statement_descriptor = service_name
 ) => {
-  return await stripe.products.create({
+  return stripe.products.create({
     name: service_name,
     type: "service",
     statement_descriptor
@@ -14,7 +14,7 @@ const create_service_product = async (
 };
 
 const create_monthly_plan = async (product_id, plan_name, yen) => {
-  return await stripe.plans.create({
+  return stripe.plans.create({
     product: product_id,
     nickname: plan_name,
     currency: "jpy",
@@ -36,20 +36,20 @@ const create_customer_with_dummy_card = async (
     token = "tok_visa";
   }
 
-  return await stripe.customers.create({
+  return stripe.customers.create({
     email,
     source: token
   });
 };
 
 const create_customer_without_card = async email => {
-  return await stripe.customers.create({
+  return stripe.customers.create({
     email
   });
 };
 
 const create_subscription = async (customer_id, plan_id) => {
-  return await stripe.subscriptions.create({
+  return stripe.subscriptions.create({
     customer: customer_id,
     items: [{ plan: plan_id }],
     expand: ["latest_invoice.payment_intent"]
@@ -58,7 +58,7 @@ const create_subscription = async (customer_id, plan_id) => {
 
 const change_plan_of_subscription = async (subscription_id, new_plan_id) => {
   const subscription = await stripe.subscriptions.retrieve(subscription_id);
-  return await stripe.subscriptions.update(subscription.id, {
+  return stripe.subscriptions.update(subscription.id, {
     cancel_at_period_end: false,
     items: [
       {
@@ -75,11 +75,11 @@ const change_plan_of_subscription = async (subscription_id, new_plan_id) => {
 };
 
 const cancel_subscription_immediately = async (subscription_id) => {
-  return await stripe.subscriptions.del(subscription_id);
+  return stripe.subscriptions.del(subscription_id);
 };
 
 const cancel_subscription_at_the_end_of_period = async (subscription_id) => {
-  return await stripe.subscriptions.update(subscription_id, {cancel_at_period_end: true});
+  return stripe.subscriptions.update(subscription_id, {cancel_at_period_end: true});
 };
 
 const create_webhook_endpoint_for_all_events = async webhook_url => {
