@@ -101,6 +101,11 @@ const check_if_customer_has_card = async customer_id => {
   return customer["default_source"] !== null;
 };
 
+const check_if_subscription_valid = async subscription_id => {
+  const subscription = await stripe.subscriptions.retrieve(subscription_id);
+  return subscription["status"] === "active";
+};
+
 const get_stripe_stored_data = () => {
   return require("./stripe-data.json");
 };
@@ -117,5 +122,6 @@ module.exports = {
   create_webhook_endpoint_for_all_events,
   create_webhook_endpoints_for_subscription,
   check_if_customer_has_card,
+  check_if_subscription_valid,
   get_stripe_stored_data
 };
