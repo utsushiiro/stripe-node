@@ -106,6 +106,21 @@ const check_if_subscription_valid = async subscription_id => {
   return subscription["status"] === "active";
 };
 
+const get_credit_card_info = async customer_id => {
+  const customer = await stripe.customers.retrieve(customer_id, { expand: ['default_source'] });
+
+  if (customer.default_source == null) {
+    return undefined;
+  }
+
+  return {
+    brand: customer.default_source.brand,
+    last4: customer.default_source.last4,
+    exp_month:  customer.default_source.exp_month,
+    exp_year: customer.default_source.exp_year,
+  };
+};
+
 const get_stripe_stored_data = () => {
   return require("./stripe-data.json");
 };
@@ -123,5 +138,6 @@ module.exports = {
   create_webhook_endpoints_for_subscription,
   check_if_customer_has_card,
   check_if_subscription_valid,
+  get_credit_card_info,
   get_stripe_stored_data
 };
